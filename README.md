@@ -6,7 +6,7 @@
 ![Downloads](https://img.shields.io/badge/downloads-1M+-purple?style=for-the-badge)
 ![LinkedIn Approved](https://img.shields.io/badge/LinkedIn-Approved-0077b5?style=for-the-badge&logo=linkedin)
 ![Disruption Level](https://img.shields.io/badge/disruption-MAXIMUM-red?style=for-the-badge)
-![Thought Leadership](https://img.shields.io/badge/thought-leadership-∞-orange?style=for-the-badge)
+![Thought Leadership](https://img.shields.io/badge/thought--leadership-UNLIMITED-orange?style=for-the-badge)
 ![Synergy](https://img.shields.io/badge/synergy-ACTIVATED-green?style=for-the-badge)
 ![Innovation](https://img.shields.io/badge/innovation-DISRUPTIVE-ff69b4?style=for-the-badge)
 ![Made with Love](https://img.shields.io/badge/made%20with-♥️-ff1744?style=for-the-badge)
