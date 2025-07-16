@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Taiwan Satellite Viewer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      .image-fade {
+        transition: opacity 0.3s ease-in-out;
+      }
+      .loading {
+        opacity: 0.5;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-900 text-white h-screen flex flex-col">
+    <header class="bg-gray-800 shadow-lg h-15">
+      <div class="container mx-auto px-4 py-4">
+        <div class="flex justify-start items-center">
+          <h1 class="text-xl font-bold text-blue-400">
+            🛰️ Taiwan Satellite Viewer
+          </h1>
+        </div>
+      </div>
+    </header>
+
+    <main class="container mx-auto py-6 flex flex-col h-[calc(100vh-3.75rem)]">
+      <div class="flex flex-col lg:flex-row gap-6 h-full">
+        <div
+          class="order-1 lg:order-2 lg:flex-1 flex flex-col h-full mx-4 lg:mx-0"
+        >
+          <div class="bg-gray-800 rounded-lg p-4 flex-1 flex flex-col h-full">
+            <div class="relative flex-1 flex min-h-0">
+              <div
+                id="satelliteContainer"
+                class="flex-1 bg-gray-800 flex items-center justify-center text-gray-400 text-lg rounded-lg image-fade h-full overflow-hidden min-h-0"
+              >
+                <span id="loadingText">🛰️ Loading satellite data...</span>
+                <img
+                  id="satelliteImage"
+                  class="w-full h-full object-cover rounded-lg hidden"
+                  alt="Satellite Image"
+                />
+              </div>
+
+              <div
+                id="errorMessage"
+                class="hidden absolute inset-0 flex items-center justify-center bg-gray-900 bg-opacity-75 rounded-lg"
+              >
+                <div class="text-center">
+                  <div class="text-red-400 text-xl mb-2">⚠️</div>
+                  <div class="text-white">Failed to load satellite image</div>
+                  <button
+                    id="retryBtn"
+                    class="mt-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md"
+                  >
+                    Retry
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="order-2 lg:order-1 lg:w-1/4 space-y-4 overflow-y-auto h-full mx-4 lg:mx-0"
+        >
+          <div class="bg-gray-800 rounded-lg p-4">
+            <h3 class="text-lg font-semibold mb-3 text-blue-400">
+              Time Selection
+            </h3>
+            <select
+              id="timeSelect"
+              class="w-full px-3 py-2 bg-gray-700 text-white rounded-md border border-gray-600 focus:border-blue-500 focus:outline-none text-sm"
+            >
+              <option value="0">Loading timestamps...</option>
+            </select>
+          </div>
+
+          <div class="bg-gray-800 rounded-lg p-4">
+            <h3 class="text-lg font-semibold mb-3 text-blue-400">
+              Satellite Type
+            </h3>
+            <div class="grid grid-cols-2 lg:grid-cols-1 gap-2">
+              <button
+                class="satellite-type px-3 py-2 text-center lg:text-left rounded-md bg-blue-600 text-white text-sm"
+                data-type="Tab0"
+              >
+                可見光
+              </button>
+              <button
+                class="satellite-type px-3 py-2 text-center lg:text-left rounded-md bg-gray-700 hover:bg-gray-600 text-white text-sm"
+                data-type="Tab1"
+              >
+                彩色
+              </button>
+              <button
+                class="satellite-type px-3 py-2 text-center lg:text-left rounded-md bg-gray-700 hover:bg-gray-600 text-white text-sm"
+                data-type="Tab2"
+              >
+                色調強化
+              </button>
+              <button
+                class="satellite-type px-3 py-2 text-center lg:text-left rounded-md bg-gray-700 hover:bg-gray-600 text-white text-sm"
+                data-type="Tab3"
+              >
+                黑白
+              </button>
+              <button
+                class="satellite-type px-3 py-2 text-center lg:text-left rounded-md bg-gray-700 hover:bg-gray-600 text-white text-sm col-span-2 lg:col-span-1"
+                data-type="Tab4"
+              >
+                真實色
+              </button>
+            </div>
+          </div>
+
+          <div class="bg-gray-800 rounded-lg p-4">
+            <h3 class="text-lg font-semibold mb-3 text-blue-400">
+              Coverage Area
+            </h3>
+            <div class="grid grid-cols-3 lg:grid-cols-1 gap-2">
+              <button
+                class="area-btn px-3 py-2 text-center lg:text-left rounded-md bg-blue-600 text-white text-sm"
+                data-area="Area1"
+              >
+                東亞
+              </button>
+              <button
+                class="area-btn px-3 py-2 text-center lg:text-left rounded-md bg-gray-700 hover:bg-gray-600 text-white text-sm"
+                data-area="Area0"
+              >
+                全景
+              </button>
+              <button
+                class="area-btn px-3 py-2 text-center lg:text-left rounded-md bg-gray-700 hover:bg-gray-600 text-white text-sm"
+                data-area="Area2"
+              >
+                臺灣
+              </button>
+            </div>
+          </div>
+
+          <div class="bg-gray-800 rounded-lg p-4">
+            <h3 class="text-lg font-semibold mb-3 text-blue-400">Settings</h3>
+            <div class="flex items-center justify-between">
+              <span class="text-sm text-gray-300">Bandwidth Saving</span>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  id="bandwidthToggle"
+                  class="sr-only peer"
+                  checked
+                />
+                <div
+                  class="w-11 h-6 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"
+                ></div>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script src="https://www.cwa.gov.tw/Data/js/obs_img/Observe_sat.js"></script>
+    <script>
+      let currentState = {
+        type: 'Tab0',
+        area: 'Area1',
+        timeIndex: 0,
+        useBandwidthSaving: true,
+      }
+
+      function getCurrentSatelliteData() {
+        const size = currentState.useBandwidthSaving ? 'size1' : 'size0'
+        return SatImg[currentState.type][currentState.area][size]['C']
+      }
+
+      function generateImageUrl(type, area, timeIndex) {
+        const size = currentState.useBandwidthSaving ? 'size1' : 'size0'
+        const satelliteData = SatImg[type][area][size]['C']
+        const entry = satelliteData[timeIndex.toString()]
+
+        if (!entry) return null
+
+        return `https://www.cwa.gov.tw/Data/satellite/${entry.img}`
+      }
+
+      function updateImage() {
+        const container = document.getElementById('satelliteContainer')
+        const error = document.getElementById('errorMessage')
+        const loadingText = document.getElementById('loadingText')
+        const satelliteImage = document.getElementById('satelliteImage')
+
+        loadingText.classList.remove('hidden')
+        error.classList.add('hidden')
+        container.classList.add('loading')
+        satelliteImage.classList.add('hidden')
+
+        const newUrl = generateImageUrl(
+          currentState.type,
+          currentState.area,
+          currentState.timeIndex
+        )
+
+        if (newUrl) {
+          satelliteImage.onload = function () {
+            satelliteImage.classList.remove('hidden')
+            loadingText.classList.add('hidden')
+            container.classList.remove('loading')
+          }
+
+          satelliteImage.onerror = function () {
+            loadingText.classList.add('hidden')
+            error.classList.remove('hidden')
+            container.classList.remove('loading')
+          }
+
+          satelliteImage.src = newUrl
+        } else {
+          loadingText.classList.add('hidden')
+          error.classList.remove('hidden')
+          container.classList.remove('loading')
+        }
+      }
+
+      function initializeTimeSelect() {
+        const timeSelect = document.getElementById('timeSelect')
+        const satelliteData = getCurrentSatelliteData()
+
+        timeSelect.innerHTML = ''
+
+        Object.keys(satelliteData).forEach((key, index) => {
+          const entry = satelliteData[key]
+          const option = document.createElement('option')
+          option.value = key
+          option.textContent = entry.text
+          timeSelect.appendChild(option)
+        })
+
+        timeSelect.value = currentState.timeIndex
+      }
+
+      document.addEventListener('DOMContentLoaded', function () {
+        initializeTimeSelect()
+        updateImage()
+
+        document.querySelectorAll('.satellite-type').forEach((btn) => {
+          btn.addEventListener('click', function () {
+            document.querySelectorAll('.satellite-type').forEach((b) => {
+              b.classList.remove('bg-blue-600')
+              b.classList.add('bg-gray-700', 'hover:bg-gray-600')
+            })
+            this.classList.add('bg-blue-600')
+            this.classList.remove('bg-gray-700', 'hover:bg-gray-600')
+
+            currentState.type = this.dataset.type
+            currentState.timeIndex = 0
+            initializeTimeSelect()
+            updateImage()
+          })
+        })
+
+        document.querySelectorAll('.area-btn').forEach((btn) => {
+          btn.addEventListener('click', function () {
+            document.querySelectorAll('.area-btn').forEach((b) => {
+              b.classList.remove('bg-blue-600')
+              b.classList.add('bg-gray-700', 'hover:bg-gray-600')
+            })
+            this.classList.add('bg-blue-600')
+            this.classList.remove('bg-gray-700', 'hover:bg-gray-600')
+
+            currentState.area = this.dataset.area
+            currentState.timeIndex = 0
+            initializeTimeSelect()
+            updateImage()
+          })
+        })
+
+        document
+          .getElementById('timeSelect')
+          .addEventListener('change', function () {
+            currentState.timeIndex = parseInt(this.value)
+            updateImage()
+          })
+
+        document
+          .getElementById('bandwidthToggle')
+          .addEventListener('change', function () {
+            currentState.useBandwidthSaving = this.checked
+            currentState.timeIndex = 0
+            initializeTimeSelect()
+            updateImage()
+          })
+
+        document
+          .getElementById('retryBtn')
+          .addEventListener('click', function () {
+            updateImage()
+          })
+      })
+    </script>
+  </body>
+</html>
