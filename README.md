@@ -29,6 +29,10 @@ _What if we could democratize satellite viewing?_
 
 ## 📸 See It In Action
 
+🚀 **LIVE DEMO:** [https://davidyen1124.github.io/taiwan-satellite-viewer/](https://davidyen1124.github.io/taiwan-satellite-viewer/)
+
+Experience the FUTURE of satellite viewing RIGHT NOW! This isn't just a demo - it's a REVOLUTION! 💡
+
 ![Taiwan Satellite Viewer Screenshot](images/screenshot.png)
 
 ## 🚀 Features That Will Blow Your Mind (No Cap 🧢)
